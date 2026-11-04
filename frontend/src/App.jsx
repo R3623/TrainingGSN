@@ -7,7 +7,7 @@ import SigninPage from "./pages/Signin.jsx";
 
 function App() {
 
-  const HOST_BACK = "http://192.168.88.143:8000";
+  const HOST_BACK = "http://localhost:8000";
   return (
     <>
       <BrowserRouter>
