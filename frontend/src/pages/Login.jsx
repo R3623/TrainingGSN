@@ -1,6 +1,8 @@
 import { TextField, Button } from "@mui/material";
 import { useState } from "react";
-function Login({ HOST_BACK }) {
+import { useNavigate } from "react-router-dom";
+
+function Login({ HOST_BACK, setUser }) {
   //State
   const [loginData, setLoginData] = useState({
     loginput: "",
@@ -9,6 +11,7 @@ function Login({ HOST_BACK }) {
 
   const [estErreur, setEstErreur] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   //Comportement
 
@@ -41,7 +44,14 @@ function Login({ HOST_BACK }) {
       console.log(response);
 
       
-    
+
+      if (response.status == 200) {
+        setUser(response.user)
+        navigate("../home");
+
+
+      }
+
       if (response.status >= 400) {
         setEstErreur(true);
         setMessage(response.message);
@@ -79,10 +89,10 @@ function Login({ HOST_BACK }) {
             Se connecter
           </Button>
           <div
-          className = {`text-3xl text-red-500 ${estErreur ? 'block' : 'hidden'}`}
-        >
-          {message}
-        </div>
+            className={`text-3xl text-red-500 ${estErreur ? "block" : "hidden"}`}
+          >
+            {message}
+          </div>
         </form>
       </div>
     </>

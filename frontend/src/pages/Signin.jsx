@@ -1,5 +1,7 @@
 import { TextField, Button } from "@mui/material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Signin = ({ HOST_BACK }) => {
   //State
   const [signin_data, setSigninData] = useState({
@@ -8,6 +10,7 @@ const Signin = ({ HOST_BACK }) => {
     password1: "",
     password2: "",
   });
+  const navigate = useNavigate();
 
   const [estErreur, setEstErreur] = useState(false);
   const [message, setMessage] = useState("")
@@ -33,6 +36,10 @@ const Signin = ({ HOST_BACK }) => {
       });
 
       response = await response.json();
+
+      if (response.status == 200) {
+        navigate("../login");
+      }
 
       if (response.status >= 400) {
         setEstErreur(true);
