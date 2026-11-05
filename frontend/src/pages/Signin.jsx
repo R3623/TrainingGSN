@@ -9,19 +9,22 @@ const Signin = ({ HOST_BACK }) => {
     password2: "",
   });
 
+  const [estErreur, setEstErreur] = useState(false);
+  const [message, setMessage] = useState("")
+
   //Comportement
 
   const handleChange = (e) => {
     const [name, value] = [e.target.name, e.target.value];
     setSigninData({ ...signin_data, [name]: value });
-  };
+  };*;
 
   const handleForm = async (e) => {
     e.preventDefault();
 
     try {
       console.log(`${HOST_BACK}/api/signin`);
-      const response = await fetch(`${HOST_BACK}/api/signin/`, {
+      let response = await fetch(`${HOST_BACK}/api/signin/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,7 +32,12 @@ const Signin = ({ HOST_BACK }) => {
         body: JSON.stringify(signin_data),
       });
 
-      console.log(response);
+      response = await response.json();
+
+      if (response.status >= 400) {
+        setEstErreur(true);
+        setMessage(response.message)
+      }
     } catch (error) {
       console.log(error);
     }
@@ -39,7 +47,7 @@ const Signin = ({ HOST_BACK }) => {
 
   return (
     <>
-      <div className="flex">
+      <div>
         <h2>Inscription</h2>
         <label htmlFor="">Username</label>
         <TextField
@@ -49,10 +57,9 @@ const Signin = ({ HOST_BACK }) => {
           onChange={handleChange}
         />
         <br />
-
         <label htmlFor="">Email</label>
         <TextField label="Email" name="email" onChange={handleChange} />
-        <br />
+        <div className="block"></div>
 
         <label htmlFor="">Password</label>
         <TextField
@@ -66,12 +73,19 @@ const Signin = ({ HOST_BACK }) => {
         <label htmlFor="">Confirm Password</label>
         <TextField
           label="Confirm Password"
+          value={signin_data.password2}
           name="password2"
           onChange={handleChange}
         />
         <br />
 
         <Button onClick={handleForm}>S'inscrire</Button>
+
+        <div
+          className = {`text-3xl text-red-500 ${estErreur ? 'block' : 'hidden'}`}
+        >
+          {message}
+        </div>
       </div>
       <div></div>
     </>
