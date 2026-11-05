@@ -3,6 +3,9 @@ from django.http import JsonResponse, HttpResponse
 from .models import MyUser
 import json
 from django.views.decorators.csrf import csrf_exempt
+
+from django.contrib.auth import authenticate, login
+
 # Create your views here.
 
 @csrf_exempt
@@ -48,4 +51,49 @@ def signin(request):
         })
         
             
-    
+
+
+@csrf_exempt
+def logins(request):
+    try:
+        if(request.method == "POST"):
+            data = json.loads(request.body)
+
+            username = data.get("username")
+            email = data.get("email")
+            password = data.get("password")
+
+            if(email is None):
+                user = MyUser.objects.filter(username=username).first()
+                
+                if user :
+                    email = user.email
+                else:
+                    return JsonResponse({
+                        "message":"Nom d'utilisateur non trouvé",
+                        "status":400
+                    })
+            
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                return JsonResponse({
+                    "message":"Connexion réussie",
+                    "user" : {
+                        "username": user.username,
+                        "email": user.email
+                    },
+                    "status":200
+                })
+            
+            return JsonResponse({
+                "message":"Email ou Mot de passe incorrect",
+                "status":400
+            })
+
+
+    except Exception as e:
+        return JsonResponse({
+            "message":str(e),
+            "status":500
+        })
