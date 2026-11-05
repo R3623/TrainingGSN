@@ -17,7 +17,7 @@ const Signin = ({ HOST_BACK }) => {
   const handleChange = (e) => {
     const [name, value] = [e.target.name, e.target.value];
     setSigninData({ ...signin_data, [name]: value });
-  };*;
+  }
 
   const handleForm = async (e) => {
     e.preventDefault();
